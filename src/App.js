@@ -1,41 +1,38 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CardList } from './components/card-list/card-list.component'
 import { Search } from './components/search/search.component'
 
 import './App.css'
 
-class App extends Component {
-  state = {
+const App = () => {
+
+  const [state, setState] = useState({
     cards: [],
     searchTerm: ''
-  };
+  })
 
-  searchHandler = this.searchHandler.bind(this)
+  const searchHandler = ({ target }) => {
+    setState({ ...state, searchTerm: target.value.toLowerCase() })
+  }
 
-  componentDidMount () {
+  useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then((response) => response.json())
-      .then((users) => this.setState({ cards: [...users] }))
-  }
+      .then((users) => setState({ ...state, cards: [...users] }))
+  })
 
-  searchHandler ({ target }) {
-    this.setState({ searchTerm: target.value.toLowerCase() })
-  }
+  const {searchTerm, cards} = state
 
-  render () {
-    const { cards, searchTerm } = this.state
-
-    return (
-      <div className='App'>
-        <h1>Monsters Rolodex</h1>
-        <Search
-          placeholder='search monsters'
-          searchHandler={this.searchHandler}
-        />
-        <CardList cards={cards} searchTerm={searchTerm} />
-      </div>
-    )
-  }
+  return (
+    <div className='App'>
+      <h1>Monsters Rolodex</h1>
+      <Search
+        placeholder='search monsters'
+        searchHandler={searchHandler}
+      />
+      <CardList cards={cards} searchTerm={searchTerm} />
+    </div>
+  )
 }
 
 export default App
