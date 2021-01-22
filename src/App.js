@@ -8,7 +8,8 @@ const App = () => {
 
   const [state, setState] = useState({
     cards: [],
-    searchTerm: ''
+    searchTerm: '',
+    title: ''
   })
 
   const searchHandler = ({ target }) => {
@@ -16,10 +17,15 @@ const App = () => {
   }
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((users) => setState({ ...state, cards: [...users] }))
-  })
+    const fetchUsers = async () => {
+      const response = await fetch('https://jsonplaceholder.typicode.com/users')
+      const users = await response.json()
+
+      setState(state => ({ ...state, cards: [...users] }))
+    }
+
+    fetchUsers()
+  }, [])
 
   const {searchTerm, cards} = state
 
